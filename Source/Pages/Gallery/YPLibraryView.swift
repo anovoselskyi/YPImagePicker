@@ -24,6 +24,17 @@ final class YPLibraryView: UIView {
     let progressView = UIProgressView()
     let line = UIView()
     var shouldShowLoader = false
+    var overlayView: UIView? {
+        didSet {
+            oldValue?.removeFromSuperview()
+            guard let overlayView = overlayView else { return }
+            sv(
+                overlayView
+            )
+            
+            overlayView.followEdges(assetZoomableView)
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
