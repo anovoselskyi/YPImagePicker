@@ -264,12 +264,15 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
 		if !YPConfig.hidesCancelButton {
 			// Update Nav Bar state.
             if let cancelButtonImage = YPConfig.cancelButtonImage {
-                navigationItem.leftBarButtonItem = UIBarButtonItem(image: cancelButtonImage, style: .plain, target: self, action: #selector(close))
+                navigationItem.leftBarButtonItem = UIBarButtonItem(image: cancelButtonImage,
+                                                                   style: .plain,
+                                                                   target: self,
+                                                                   action: #selector(close))
             } else {
                 navigationItem.leftBarButtonItem = UIBarButtonItem(title: YPConfig.wordings.cancel,
-                                                               style: .plain,
-                                                               target: self,
-                                                               action: #selector(close))
+                                                                   style: .plain,
+                                                                   target: self,
+                                                                   action: #selector(close))
             }
 		}
         switch mode {
