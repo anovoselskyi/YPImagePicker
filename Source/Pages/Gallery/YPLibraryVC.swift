@@ -94,6 +94,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     public override func loadView() {
         v = YPLibraryView.xibView()
         v.overlayView = YPConfig.libraryOverlayView
+        v.selectionPreviewHidden = YPConfig.library.selectionPreviewHidden
         view = v
     }
     

@@ -229,6 +229,9 @@ public struct YPConfigLibrary {
     
     /// Set the overlay type shown on top of the selected library item
     public var itemOverlayType: YPItemOverlayType = .grid
+    
+    /// Hides selection preview view
+    public var selectionPreviewHidden = false
 }
 
 /// Encapsulates video specific settings.

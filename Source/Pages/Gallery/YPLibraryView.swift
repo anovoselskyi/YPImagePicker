@@ -18,6 +18,8 @@ final class YPLibraryView: UIView {
     @IBOutlet weak var assetZoomableView: YPAssetZoomableView!
     @IBOutlet weak var assetViewContainer: YPAssetViewContainer!
     @IBOutlet weak var assetViewContainerConstraintTop: NSLayoutConstraint!
+    @IBOutlet weak var collectionViewTopSuperviewConstraint: NSLayoutConstraint!
+    @IBOutlet weak var collectionViewTopZoomViewConstraint: NSLayoutConstraint!
     
     let maxNumberWarningView = UIView()
     let maxNumberWarningLabel = UILabel()
@@ -33,6 +35,17 @@ final class YPLibraryView: UIView {
             )
             
             overlayView.followEdges(assetZoomableView)
+        }
+    }
+    
+    var selectionPreviewHidden = false {
+        didSet {
+            if selectionPreviewHidden {
+                assetViewContainer.isHidden = true
+                line.isHidden = assetViewContainer.isHidden
+                collectionViewTopZoomViewConstraint.isActive = false
+                collectionViewTopSuperviewConstraint.isActive = true
+            }
         }
     }
     
