@@ -232,6 +232,9 @@ public struct YPConfigLibrary {
     
     /// Hides selection preview view
     public var selectionPreviewHidden = false
+    
+    /// Configure the selection indicator position
+    public var selectionIndicatorAlighnment: YPAngleAlignment?
 }
 
 /// Encapsulates video specific settings.

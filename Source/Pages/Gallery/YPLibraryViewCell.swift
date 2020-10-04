@@ -13,6 +13,7 @@ class YPMultipleSelectionIndicator: UIView {
     
     let circle = UIView()
     let label = UILabel()
+    let selectionImageView = UIImageView()
     var selectionColor = UIColor.ypSystemBlue
 
     convenience init() {
@@ -22,7 +23,8 @@ class YPMultipleSelectionIndicator: UIView {
         
         sv(
             circle,
-            label
+            label,
+            selectionImageView
         )
         
         circle.fillContainer()
@@ -33,6 +35,7 @@ class YPMultipleSelectionIndicator: UIView {
         label.textAlignment = .center
         label.textColor = .white
         label.font = YPConfig.fonts.multipleSelectionIndicatorFont
+        selectionImageView.isHidden = true
         
         set(number: nil)
     }
@@ -40,15 +43,27 @@ class YPMultipleSelectionIndicator: UIView {
     func set(number: Int?) {
         label.isHidden = (number == nil)
         if let number = number {
-            circle.backgroundColor = selectionColor
-            circle.layer.borderColor = UIColor.clear.cgColor
-            circle.layer.borderWidth = 0
-            label.text = "\(number)"
+            if let selectedIcon = YPConfig.icons.multipleSelectionSelectedIcon {
+                selectionImageView.isHidden = false
+                selectionImageView.image = selectedIcon
+            } else {
+                selectionImageView.isHidden = true
+                circle.backgroundColor = selectionColor
+                circle.layer.borderColor = UIColor.clear.cgColor
+                circle.layer.borderWidth = 0
+                label.text = "\(number)"
+            }
         } else {
-            circle.backgroundColor = UIColor.white.withAlphaComponent(0.3)
-            circle.layer.borderColor = UIColor.white.cgColor
-            circle.layer.borderWidth = 1
-            label.text = ""
+            if let unselectedIcon = YPConfig.icons.multipleSelectionUnselectedIcon {
+                selectionImageView.isHidden = false
+                selectionImageView.image = unselectedIcon
+            } else {
+                selectionImageView.isHidden = true
+                circle.backgroundColor = UIColor.white.withAlphaComponent(0.3)
+                circle.layer.borderColor = UIColor.white.cgColor
+                circle.layer.borderWidth = 1
+                label.text = ""
+            }
         }
     }
 }
@@ -79,10 +94,23 @@ class YPLibraryViewCell: UICollectionViewCell {
             5
         )
         
-        layout(
-            3,
-            multipleSelectionIndicator-3-|
-        )
+        if let alignment = YPConfig.library.selectionIndicatorAlighnment {
+            switch alignment {
+            case .leftTop(let insets):
+                layout(insets.top, |-insets.left-multipleSelectionIndicator)
+            case .leftBottom(let insets):
+                layout(|-insets.left-multipleSelectionIndicator, insets.bottom)
+            case .rightTop(let insets):
+                layout(insets.top, multipleSelectionIndicator-insets.right-|)
+            case .rightBottom(let insets):
+                layout(multipleSelectionIndicator-insets.right-|, insets.bottom)
+            }
+        } else {
+            layout(
+                3,
+                multipleSelectionIndicator-3-|
+            )
+        }
         
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
