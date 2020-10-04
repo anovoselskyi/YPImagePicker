@@ -108,6 +108,9 @@ public struct YPImagePickerConfiguration {
     
     /// Defines if the title view should be hidden when showing the picker. Default is false.
     public var hidesTitleView = false
+    
+    /// Set custom title text
+    public var titleViewText: String?
 
     /// Defines the preferredStatusBarAppearance
     public var preferredStatusBarStyle = UIStatusBarStyle.default

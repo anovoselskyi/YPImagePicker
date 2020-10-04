@@ -209,6 +209,12 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     
     func setTitleViewWithTitle(aTitle: String) {
         guard !YPConfig.hidesTitleView else { return }
+        
+        if let title = YPConfig.titleViewText {
+            navigationItem.title = title
+            return
+        }
+        
         let titleView = UIView()
         titleView.frame = CGRect(x: 0, y: 0, width: 200, height: 40)
         
