@@ -319,15 +319,17 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         switch mode {
         case .library:
             setTitleViewWithTitle(aTitle: libraryVC?.title ?? "")
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: YPConfig.wordings.next,
-                                                                style: .done,
-                                                                target: self,
-                                                                action: #selector(done))
-            navigationItem.rightBarButtonItem?.tintColor = YPConfig.colors.tintColor
+            if !YPConfig.library.showCustomizedDoneView {
+                navigationItem.rightBarButtonItem = UIBarButtonItem(title: YPConfig.wordings.next,
+                                                                    style: .done,
+                                                                    target: self,
+                                                                    action: #selector(done))
+                navigationItem.rightBarButtonItem?.tintColor = YPConfig.colors.tintColor
 
-            // Disable Next Button until minNumberOfItems is reached.
-            navigationItem.rightBarButtonItem?.isEnabled =
-				libraryVC!.selection.count >= YPConfig.library.minNumberOfItems
+                // Disable Next Button until minNumberOfItems is reached.
+                navigationItem.rightBarButtonItem?.isEnabled =
+                    libraryVC!.selection.count >= YPConfig.library.minNumberOfItems
+            }
 
         case .camera:
             navigationItem.titleView = nil
