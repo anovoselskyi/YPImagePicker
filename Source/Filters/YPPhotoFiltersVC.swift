@@ -147,7 +147,9 @@ open class YPPhotoFiltersVC: UIViewController, IsMediaFilterVC, UIGestureRecogni
     @objc
     func save() {
         guard let didSave = didSave else { return print("Don't have saveCallback") }
-        self.navigationItem.rightBarButtonItem = YPLoaders.defaultLoader
+        if !YPConfig.library.showCustomizedDoneView {
+            self.navigationItem.rightBarButtonItem = YPLoaders.defaultLoader
+        }
 
         DispatchQueue.global().async {
             if let f = self.selectedFilter,

@@ -119,7 +119,9 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
 
     @objc public func save() {
         guard let didSave = didSave else { return print("Don't have saveCallback") }
-        navigationItem.rightBarButtonItem = YPLoaders.defaultLoader
+        if !YPConfig.library.showCustomizedDoneView {
+            navigationItem.rightBarButtonItem = YPLoaders.defaultLoader
+        }
 
         do {
             let asset = AVURLAsset(url: inputVideo.url)

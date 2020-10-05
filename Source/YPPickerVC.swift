@@ -40,6 +40,14 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     private var cameraVC: YPCameraVC?
     private var videoVC: YPVideoCaptureVC?
     
+    private lazy var customDoneView: YPDoneView = {
+        let doneView = YPDoneView(frame: .zero)
+        doneView.backgroundColor = .white
+        doneView.doneButton.addTarget(self, action: #selector(done), for: .touchUpInside)
+        
+        return doneView
+    }()
+    
     var mode = Mode.camera
     
     var capturedImage: UIImage?
@@ -121,6 +129,15 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         
         YPHelper.changeBackButtonIcon(self)
         YPHelper.changeBackButtonTitle(self)
+        
+        if YPConfig.library.showCustomizedDoneView {
+            view.addSubview(customDoneView)
+            customDoneView.translatesAutoresizingMaskIntoConstraints = false
+            customDoneView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            customDoneView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            customDoneView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            customDoneView.heightAnchor.constraint(equalToConstant: 67).isActive = true
+        }
     }
     
     open override func viewWillAppear(_ animated: Bool) {
@@ -137,6 +154,22 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         UIView.animate(withDuration: 0.3) {
             self.setNeedsStatusBarAppearanceUpdate()
         }
+    }
+    
+    private func configureDoneButton() {
+        libraryVC?.selectedMedia(photoCallback: { [weak self] photo in
+            self?.customDoneView.previewImageView.image = photo.originalImage
+        }, videoCallback: { [weak self] video in
+            self?.customDoneView.previewImageView.image = video.thumbnail
+        }, multipleItemsCallback: { [weak self] items in
+            guard let lastItem = items.last else { return }
+            switch lastItem {
+            case .photo(let photo):
+                self?.customDoneView.previewImageView.image = photo.originalImage
+            case .video(let video):
+                self?.customDoneView.previewImageView.image = video.thumbnail
+            }
+        })
     }
     
     internal func pagerScrollViewDidScroll(_ scrollView: UIScrollView) { }
@@ -351,7 +384,9 @@ extension YPPickerVC: YPLibraryViewDelegate {
         DispatchQueue.main.async {
             self.v.scrollView.isScrollEnabled = false
             self.libraryVC?.v.fadeInLoader()
-            self.navigationItem.rightBarButtonItem = YPLoaders.defaultLoader
+            if !YPConfig.library.showCustomizedDoneView {
+                self.navigationItem.rightBarButtonItem = YPLoaders.defaultLoader
+            }
         }
     }
     
@@ -392,4 +427,14 @@ extension YPPickerVC: YPLibraryViewDelegate {
     public func libraryViewShouldAddToSelection(indexPath: IndexPath, numSelections: Int) -> Bool {
         return imagePickerDelegate?.shouldAddToSelection(indexPath: indexPath, numSelections: numSelections) ?? true
     }
+    
+    public func libraryViewDidAddToSelection(addedIndex: Int) {
+        guard YPConfig.library.showCustomizedDoneView else { return }
+        configureDoneButton()
+    }
+    
+    public func libraryViewDidRemoveFromSelection(removedIndex: Int) {
+        guard YPConfig.library.showCustomizedDoneView else { return }
+        configureDoneButton()
+    }    
 }

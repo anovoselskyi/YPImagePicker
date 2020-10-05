@@ -61,6 +61,7 @@ extension YPLibraryVC {
 			$0.assetIdentifier == mediaManager.fetchResult[indexPath.row].localIdentifier
 		}) {
             selection.remove(at: positionIndex)
+            delegate?.libraryViewDidRemoveFromSelection(removedIndex: Int(positionIndex))
 
             // Refresh the numbers
             var selectedIndexPaths = [IndexPath]()
@@ -96,6 +97,7 @@ extension YPLibraryVC {
                 assetIdentifier: asset.localIdentifier
             )
         )
+        delegate?.libraryViewDidAddToSelection(addedIndex: indexPath.row)
         checkLimit()
     }
     

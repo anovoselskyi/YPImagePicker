@@ -238,6 +238,9 @@ public struct YPConfigLibrary {
     
     /// Configure the selection indicator position
     public var selectionIndicatorAlighnment: YPAngleAlignment?
+    
+    /// Added custom done view
+    public var showCustomizedDoneView = false
 }
 
 /// Encapsulates video specific settings.
