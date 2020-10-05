@@ -19,7 +19,7 @@ class YPDoneView: UIView {
     }()
     
     lazy var doneButton: UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .custom)
         button.setBackgroundImage(imageFromBundle("yp_rounded_button"), for: .normal)
         button.setBackgroundImage(imageFromBundle("yp_rounded_button_pressed"), for: .highlighted)
         button.setBackgroundImage(imageFromBundle("yp_rounded_button_disabled"), for: .disabled)

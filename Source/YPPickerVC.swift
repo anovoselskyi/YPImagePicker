@@ -156,22 +156,24 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         }
     }
     
-    private func configureDoneButton() {
-        libraryVC?.selectedMedia(photoCallback: { [weak self] photo in
-            self?.customDoneView.previewImageView.image = photo.originalImage
-        }, videoCallback: { [weak self] video in
-            self?.customDoneView.previewImageView.image = video.thumbnail
-        }, multipleItemsCallback: { [weak self] items in
-            guard let lastItem = items.last else { return }
-            switch lastItem {
-            case .photo(let photo):
-                self?.customDoneView.previewImageView.image = photo.originalImage
-            case .video(let video):
-                self?.customDoneView.previewImageView.image = video.thumbnail
+    private func configureDoneButton(asset: PHAsset?) {
+        guard let asset = asset else {
+            customDoneView.previewImageView.image = nil
+            customDoneView.doneButton.isEnabled = false
+            return
+        }
+        
+        customDoneView.doneButton.isEnabled = true
+        
+        libraryVC?.mediaManager.imageManager?.requestImage(
+            for: asset,
+            targetSize: customDoneView.doneButton.bounds.size,
+            contentMode: .aspectFill,
+            options: nil) { [weak self] image, _ in
+                self?.customDoneView.previewImageView.image = image
             }
-        })
     }
-    
+
     internal func pagerScrollViewDidScroll(_ scrollView: UIScrollView) { }
     
     func modeFor(vc: UIViewController) -> Mode {
@@ -430,11 +432,16 @@ extension YPPickerVC: YPLibraryViewDelegate {
     
     public func libraryViewDidAddToSelection(addedIndex: Int) {
         guard YPConfig.library.showCustomizedDoneView else { return }
-        configureDoneButton()
+        configureDoneButton(asset: libraryVC?.mediaManager.fetchResult[addedIndex])
     }
     
     public func libraryViewDidRemoveFromSelection(removedIndex: Int) {
         guard YPConfig.library.showCustomizedDoneView else { return }
-        configureDoneButton()
-    }    
+        
+        guard let index = libraryVC?.selection.last?.index else {
+            configureDoneButton(asset: nil)
+            return
+        }
+        configureDoneButton(asset: libraryVC?.mediaManager.fetchResult[index])
+    }
 }

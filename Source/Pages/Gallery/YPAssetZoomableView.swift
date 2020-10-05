@@ -85,14 +85,16 @@ final class YPAssetZoomableView: UIScrollView {
                 updateCropInfo()
             }
         }
-        mediaManager.imageManager?.fetchPlayerItem(for: video) { [weak self] playerItem in
-            guard let strongSelf = self else { return }
-            guard strongSelf.currentAsset != video else { completion() ; return }
-            strongSelf.currentAsset = video
+        if !YPConfig.library.selectionPreviewHidden {
+            mediaManager.imageManager?.fetchPlayerItem(for: video) { [weak self] playerItem in
+                guard let strongSelf = self else { return }
+                guard strongSelf.currentAsset != video else { completion() ; return }
+                strongSelf.currentAsset = video
 
-            strongSelf.videoView.loadVideo(playerItem)
-            strongSelf.videoView.play()
-            strongSelf.myDelegate?.ypAssetZoomableViewDidLayoutSubviews(strongSelf)
+                strongSelf.videoView.loadVideo(playerItem)
+                strongSelf.videoView.play()
+                strongSelf.myDelegate?.ypAssetZoomableViewDidLayoutSubviews(strongSelf)
+            }
         }
     }
     
