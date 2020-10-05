@@ -390,6 +390,8 @@ extension YPPickerVC: YPLibraryViewDelegate {
             self.libraryVC?.v.fadeInLoader()
             if !YPConfig.library.showCustomizedDoneView {
                 self.navigationItem.rightBarButtonItem = YPLoaders.defaultLoader
+            } else {
+                self.customDoneView.doneButton.isEnabled = false
             }
         }
     }
@@ -408,6 +410,10 @@ extension YPPickerVC: YPLibraryViewDelegate {
             self.v.scrollView.isScrollEnabled = YPConfig.isScrollToChangeModesEnabled
             self.libraryVC?.v.hideLoader()
             self.updateUI()
+            
+            if YPConfig.library.showCustomizedDoneView {
+                self.customDoneView.doneButton.isEnabled = true
+            }
         }
     }
     
