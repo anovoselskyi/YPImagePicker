@@ -45,6 +45,9 @@ final class YPLibraryView: UIView {
                 line.isHidden = assetViewContainer.isHidden
                 collectionViewTopZoomViewConstraint.isActive = false
                 collectionViewTopSuperviewConstraint.isActive = true
+                progressView.Top == collectionView.Top
+            } else {
+                progressView.Top == line.Top
             }
         }
     }
@@ -99,7 +102,6 @@ final class YPLibraryView: UIView {
         )
         
         progressView.height(5)
-        progressView.Top == line.Top
         progressView.Width == line.Width
         progressView.progressViewStyle = .bar
         progressView.trackTintColor = YPConfig.colors.progressBarTrackColor

@@ -334,24 +334,26 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
         }
 		
         // MARK: add a func(updateCropInfo) after crop multiple
-        DispatchQueue.global(qos: .userInitiated).async {
-            switch asset.mediaType {
-            case .image:
-                self.v.assetZoomableView.setImage(asset,
-                                                  mediaManager: self.mediaManager,
-                                                  storedCropPosition: self.fetchStoredCrop(),
-                                                  completion: completion,
-                                                  updateCropInfo: updateCropInfo)
-            case .video:
-                self.v.assetZoomableView.setVideo(asset,
-                                                  mediaManager: self.mediaManager,
-                                                  storedCropPosition: self.fetchStoredCrop(),
-                                                  completion: { completion(false) },
-                                                  updateCropInfo: updateCropInfo)
-            case .audio, .unknown:
-                ()
-            @unknown default:
-                fatalError()
+        if !YPConfig.library.selectionPreviewHidden {
+            DispatchQueue.global(qos: .userInitiated).async {
+                switch asset.mediaType {
+                case .image:
+                    self.v.assetZoomableView.setImage(asset,
+                                                      mediaManager: self.mediaManager,
+                                                      storedCropPosition: self.fetchStoredCrop(),
+                                                      completion: completion,
+                                                      updateCropInfo: updateCropInfo)
+                case .video:
+                    self.v.assetZoomableView.setVideo(asset,
+                                                      mediaManager: self.mediaManager,
+                                                      storedCropPosition: self.fetchStoredCrop(),
+                                                      completion: { completion(false) },
+                                                      updateCropInfo: updateCropInfo)
+                case .audio, .unknown:
+                    ()
+                @unknown default:
+                    fatalError()
+                }
             }
         }
     }
