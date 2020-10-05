@@ -123,10 +123,10 @@ class LibraryMediaManager {
                                                                 selector: #selector(self.onTickExportTimer),
                                                                 userInfo: exportSession,
                                                                 repeats: true)
-                    }
-
-                    if let s = exportSession {
-                        self.currentExportSessions.append(s)
+                        
+                        if let s = exportSession {
+                            self.currentExportSessions.append(s)
+                        }
                     }
                     return
                 }
