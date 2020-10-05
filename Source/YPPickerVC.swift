@@ -412,7 +412,7 @@ extension YPPickerVC: YPLibraryViewDelegate {
             self.updateUI()
             
             if YPConfig.library.showCustomizedDoneView {
-                self.customDoneView.doneButton.isEnabled = true
+                self.customDoneView.doneButton.isEnabled = (self.libraryVC?.selection.count ?? 0) > 0
             }
         }
     }
