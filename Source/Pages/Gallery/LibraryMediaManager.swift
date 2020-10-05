@@ -81,6 +81,56 @@ class LibraryMediaManager {
         videosOptions.deliveryMode = .highQualityFormat
         imageManager?.requestAVAsset(forVideo: videoAsset, options: videosOptions) { asset, _, _ in
             do {
+                if YPConfig.video.skipTimeLimitsAndCropping, let asset = asset as? AVURLAsset {
+                    let fileURL = URL(fileURLWithPath: NSTemporaryDirectory())
+                        .appendingUniquePathComponent(pathExtension: YPConfig.video.fileType.fileExtension)
+                    let exportSession = asset.export(to: fileURL, removeOldFile: true) { session in
+                        DispatchQueue.main.async {
+                            switch session.status {
+                            case .completed:
+                                if let url = session.outputURL {
+                                    if let resourceValues = try? url.resourceValues(forKeys: [.fileSizeKey]),
+                                        let fileSize = resourceValues.fileSize {
+
+                                        let formatter = ByteCountFormatter()
+                                        formatter.countStyle = .file
+                                        let string = formatter.string(fromByteCount: Int64(fileSize))
+
+                                        print("Exported video size: \(string)")
+                                    }
+                                    
+                                    callback(url)
+                                } else {
+                                    print("LibraryMediaManager -> Don't have URL.")
+                                    callback(nil)
+                                }
+                            case .failed:
+                                print("LibraryMediaManager")
+                                print("Export of the video failed : \(String(describing: session.error))")
+                                callback(nil)
+                            default:
+                                print("LibraryMediaManager")
+                                print("Export session completed with \(session.status) status. Not handled.")
+                                callback(nil)
+                            }
+                        }
+
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.exportTimer = Timer.scheduledTimer(timeInterval: 0.1,
+                                                                target: self,
+                                                                selector: #selector(self.onTickExportTimer),
+                                                                userInfo: exportSession,
+                                                                repeats: true)
+                    }
+
+                    if let s = exportSession {
+                        self.currentExportSessions.append(s)
+                    }
+                    return
+                }
+                
                 guard let asset = asset else { print("⚠️ PHCachingImageManager >>> Don't have the asset"); return }
                 
                 let assetComposition = AVMutableComposition()
@@ -187,7 +237,11 @@ class LibraryMediaManager {
     }
     
     @objc func onTickExportTimer(sender: Timer) {
-        if let exportSession = sender.userInfo as? AVAssetExportSession {
+        let exportSession = currentExportSessions.filter { $0.status == .exporting }
+            .sorted { $0.progress < $1.progress }
+            .first
+        
+        if let exportSession = exportSession {
             if let v = v {
                 if exportSession.progress > 0 {
                     v.updateProgress(exportSession.progress)
