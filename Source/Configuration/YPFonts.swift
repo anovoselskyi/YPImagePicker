@@ -40,4 +40,7 @@ public struct YPFonts {
 
     /// The font used in the UINavigationBar leftBarButtonItem
     public var leftBarButtonFont: UIFont?
+    
+    /// The font used in the YPDoneView done button
+    public var doneViewButtonFont: UIFont?
 }

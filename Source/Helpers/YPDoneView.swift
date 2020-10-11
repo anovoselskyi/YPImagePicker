@@ -24,6 +24,9 @@ class YPDoneView: UIView {
         button.setBackgroundImage(imageFromBundle("yp_rounded_button_pressed"), for: .highlighted)
         button.setBackgroundImage(imageFromBundle("yp_rounded_button_disabled"), for: .disabled)
         button.setTitle(YPConfig.wordings.done, for: .normal)
+        if let doneViewButtonFont = YPConfig.fonts.doneViewButtonFont {
+            button.titleLabel?.font = doneViewButtonFont
+        }
         return button
     }()
     
