@@ -137,6 +137,7 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
             customDoneView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             customDoneView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             customDoneView.heightAnchor.constraint(equalToConstant: 67).isActive = true
+            customDoneView.isHidden = true
         }
     }
     
@@ -160,10 +161,12 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         guard let asset = asset else {
             customDoneView.previewImageView.image = nil
             customDoneView.doneButton.isEnabled = false
+            customDoneView.isHidden = true
             return
         }
         
         customDoneView.doneButton.isEnabled = true
+        customDoneView.isHidden = false
         
         libraryVC?.mediaManager.imageManager?.requestImage(
             for: asset,
