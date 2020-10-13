@@ -17,5 +17,6 @@ public protocol YPLibraryViewDelegate: class {
     func noPhotosForOptions()
     func libraryViewShouldAddToSelection(indexPath: IndexPath, numSelections: Int) -> Bool
     func libraryViewDidAddToSelection(addedIndex: Int)
+    func libraryViewDidUpdates()
     func libraryViewDidRemoveFromSelection(removedIndex: Int)
 }

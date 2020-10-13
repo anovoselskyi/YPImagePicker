@@ -137,7 +137,7 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
             customDoneView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             customDoneView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             customDoneView.heightAnchor.constraint(equalToConstant: 67).isActive = true
-            customDoneView.isHidden = true
+            customDoneView.isHidden = libraryVC?.selection.isEmpty ?? true
         }
     }
     
@@ -454,5 +454,14 @@ extension YPPickerVC: YPLibraryViewDelegate {
             return
         }
         configureDoneButton(asset: libraryVC?.mediaManager.fetchResult[index])
+    }
+    
+    public func libraryViewDidUpdates() {
+        guard
+            YPConfig.library.showCustomizedDoneView,
+            let assetIndex = libraryVC?.selection.last?.index,
+            assetIndex > -1
+        else { return }
+        configureDoneButton(asset: libraryVC?.mediaManager.fetchResult[assetIndex])
     }
 }
