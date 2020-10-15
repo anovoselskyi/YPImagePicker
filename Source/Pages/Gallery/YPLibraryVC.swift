@@ -55,10 +55,6 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
         mediaManager.initialize()
         mediaManager.v = v
 
-        if mediaManager.fetchResult != nil {
-            return
-        }
-        
         setupCollectionView()
         registerForLibraryChanges()
         panGestureHelper.registerForPanGesture(on: v)
@@ -87,6 +83,9 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
             }
             v.assetViewContainer.setMultipleSelectionMode(on: multipleSelectionEnabled)
             v.collectionView.reloadData()
+        }
+        guard mediaManager.hasResultItems else {
+            return
         }
         if YPConfig.library.defaultMultipleSelection || selection.count > 1 {
             showMultipleSelection()
@@ -252,6 +251,10 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
         switch status {
         case .authorized:
             block(true)
+        #if compiler(>=5.3)
+        case .limited:
+            block(true)
+        #endif
         case .restricted, .denied:
             let popup = YPPermissionDeniedPopup()
             let alert = popup.popup(cancelBlock: {
@@ -271,16 +274,14 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     }
     
     func refreshMediaRequest() {
-        
         let options = buildPHFetchOptions()
-        
         if let collection = mediaManager.collection {
             mediaManager.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
         } else {
             mediaManager.fetchResult = PHAsset.fetchAssets(with: options)
         }
         
-        if mediaManager.fetchResult.count > 0 {
+        if mediaManager.hasResultItems {
             changeAsset(mediaManager.fetchResult[0])
             v.collectionView.reloadData()
             v.collectionView.selectItem(at: IndexPath(row: 0, section: 0),
